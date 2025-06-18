@@ -1,27 +1,35 @@
 const express = require("express");
 const router = express.Router();
 
+const budgetModel = require("../model/budget.model");
+const expenseModel = require("../model/expense.model");
+
 router.get("/demo", (req, res) => {
   res.send("Welcome to the Budget Tracker API");
 });
 
-// app.get("/", async (req, res) => {
-//   const bdData = await Budget.findOne();
-//   const expenses = await Expense.find();
+app.get("/", async (req, res) => {
+  try {
+    const bdData = await budgetModel.findOne();
+    const expenses = await expenseModel.find();
 
-//   const totalBudget = bdData ? bdData.amount : 0;
-//   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-//   const budgetLeft = totalBudget - totalExpenses;
+    const totalBudget =  bdData?.amount || 0;
+    const totalExpenses = expenses?.reduce((sum, e) => sum + e.amount, 0) || 0;
+    const budgetLeft = totalBudget - totalExpenses;
 
-//   res.render("MainBudget", {
-//     totalBudget,
-//     totalExpenses,
-//     budgetLeft,
-//     expenses,
-//   });
-// });
+    res.render("MainBudget", {
+      totalBudget,
+      totalExpenses,
+      budgetLeft,
+      expenses,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
-// app.post("/addbgb", async (req, res) => {
+// app.post("/addBudget", async (req, res) => {
 //   const existing = await Budget.findOne();
 //   const amount = parseFloat(req.body.budget);
 
