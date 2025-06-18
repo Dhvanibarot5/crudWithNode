@@ -35,7 +35,7 @@ router.post("/addBudget", async (req, res) => {
     const amount = parseFloat(req.body.budget);
 
     if (existing) {
-      existing.amount = amount;
+      existing.amount += amount;
       await existing.save();
     } else {
       await budgetModel.create({ amount });
@@ -47,11 +47,16 @@ router.post("/addBudget", async (req, res) => {
   }
 });
 
-// app.post("/addexp", async (req, res) => {
-//   const { title, amount } = req.body;
-//   await Expense.create({ title, amount: parseFloat(amount) });
-//   res.redirect("/");
-// });
+router.post("/addExpense", async (req, res) => {
+  try {
+    const { title, amount } = req.body;
+    await expenseModel.create({ title, amount: parseFloat(amount) });
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error adding expense:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // app.post("/reset", async (req, res) => {
 //   await Budget.deleteMany();
