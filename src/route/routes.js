@@ -8,12 +8,12 @@ router.get("/demo", (req, res) => {
   res.send("Welcome to the Budget Tracker API");
 });
 
-app.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const bdData = await budgetModel.findOne();
     const expenses = await expenseModel.find();
 
-    const totalBudget =  bdData?.amount || 0;
+    const totalBudget = bdData?.amount || 0;
     const totalExpenses = expenses?.reduce((sum, e) => sum + e.amount, 0) || 0;
     const budgetLeft = totalBudget - totalExpenses;
 
@@ -29,18 +29,23 @@ app.get("/", async (req, res) => {
   }
 });
 
-// app.post("/addBudget", async (req, res) => {
-//   const existing = await Budget.findOne();
-//   const amount = parseFloat(req.body.budget);
+router.post("/addBudget", async (req, res) => {
+  try {
+    const existing = await budgetModel.findOne();
+    const amount = parseFloat(req.body.budget);
 
-//   if (existing) {
-//     existing.amount = amount;
-//     await existing.save();
-//   } else {
-//     await Budget.create({ amount });
-//   }
-//   res.redirect("/");
-// });
+    if (existing) {
+      existing.amount = amount;
+      await existing.save();
+    } else {
+      await budgetModel.create({ amount });
+    }
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error adding budget:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // app.post("/addexp", async (req, res) => {
 //   const { title, amount } = req.body;
