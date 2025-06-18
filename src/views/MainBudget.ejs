@@ -45,7 +45,7 @@
             <td><%= expense.title %></td>
             <td><%= expense.amount.toFixed(2) %></td>
             <td>
-              <form action="/deleteexp/<%= expense._id %>" method="POST">
+              <form action="/deleteExpense/<%= expense._id %>" method="POST">
                 <button type="submit">Delete</button>
               </form>
             </td>

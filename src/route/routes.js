@@ -58,15 +58,27 @@ router.post("/addExpense", async (req, res) => {
   }
 });
 
-// app.post("/reset", async (req, res) => {
-//   await Budget.deleteMany();
-//   await Expense.deleteMany();
-//   res.redirect("/");
-// });
+router.post("/reset", async (req, res) => {
+  try {
+    await budgetModel.deleteMany({});
+    await expenseModel.deleteMany({});
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error resetting data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
-// app.post("/deleteexp/:id", async (req, res) => {
-//   await Expense.findByIdAndDelete(req.params.id);
-//   res.redirect("/");
-// });
+router.post("/deleteExpense/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+ 
+    await expenseModel.findByIdAndDelete(id);
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error deleting expense:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
